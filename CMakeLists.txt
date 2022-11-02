@@ -146,7 +146,7 @@ set_package_properties(CFITSIO PROPERTIES DESCRIPTION "A library for reading and
 #
 #################################################################################################
 if (INDI_BUILD_SERVER)
-if (WIN32 OR ANDROID)
+if (WIN32)
     message(WARNING "INDI Server is only supported under Linux, BSD, MacOS, and Cygwin while current system is " ${CMAKE_SYSTEM_NAME})
 else()
 
@@ -172,7 +172,7 @@ target_include_directories(indiserver SYSTEM PRIVATE ${LIBEV_INCLUDE_DIRS})
 target_include_directories(indiserver PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/libs/)
 target_link_libraries(indiserver ${LIBEV_LIBRARIES})
 install(TARGETS indiserver RUNTIME DESTINATION bin)
-endif (WIN32 OR ANDROID)
+endif (WIN32)
 endif (INDI_BUILD_SERVER)
 
 #################################################################################################
@@ -182,7 +182,7 @@ endif (INDI_BUILD_SERVER)
 # Supported OS: Linux, BSD, MacOS, Windows, Cygwin
 # N.B. Windows support pending migration of networking code
 #################################################################################################
-if (INDI_BUILD_CLIENT AND NOT ANDROID)
+if (INDI_BUILD_CLIENT)
 # 1. Dependencies
 find_package(Threads REQUIRED)
 find_package(ZLIB REQUIRED)
@@ -237,7 +237,7 @@ endif (NOT CYGWIN AND NOT WIN32)
 target_link_libraries(indiclient ${CMAKE_THREAD_LIBS_INIT})
 install(TARGETS indiclient ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/libs/indibase/baseclient.h DESTINATION ${INCLUDE_INSTALL_DIR}/libindi COMPONENT Devel)
-endif (INDI_BUILD_CLIENT AND NOT ANDROID)
+endif (INDI_BUILD_CLIENT)
 
 #################################################################################################
 #
@@ -342,7 +342,7 @@ endif (INDI_BUILD_WEBSOCKET)
 #
 #################################################################################################
 if (INDI_BUILD_DRIVERS)
-if (WIN32 OR ANDROID)
+if (WIN32)
     message(WARNING "INDI drivers are only supported under Linux, BSD, MacOS, and Cygwin while current system is " ${CMAKE_SYSTEM_NAME})
 else(WIN32 OR ANDROID)
 # 1. Dependencies
@@ -355,7 +355,11 @@ find_package(CURL REQUIRED)
 find_package(GSL REQUIRED)
 find_package(JPEG REQUIRED)
 # Math Library
-FIND_LIBRARY(M_LIB m)
+if (ANDROID)
+    set(M_LIB -lm)
+else ()
+    FIND_LIBRARY(M_LIB m)
+endif(ANDROID)
 # 2. Includes
 include_directories( ${CMAKE_CURRENT_BINARY_DIR})
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR})
@@ -2122,7 +2126,7 @@ ELSE()
   MESSAGE (STATUS  "GTEST not found, not building tests")
 ENDIF (GTEST_FOUND)
 
-endif (WIN32 OR ANDROID)
+endif (WIN32)
 endif(INDI_BUILD_DRIVERS)
 
 ###################################################################################################

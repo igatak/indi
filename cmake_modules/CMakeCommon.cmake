@@ -10,10 +10,8 @@ include(CheckCCompilerFlag)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # C++14 Support
-if (NOT ANDROID)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif(NOT ANDROID)
 
 # Ccache support
 IF (ANDROID OR UNIX OR APPLE)
@@ -47,7 +45,7 @@ IF (UNIX OR APPLE OR ANDROID)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEC_COMP_FLAGS}")
     SET(SEC_LINK_FLAGS "")
     IF (NOT APPLE AND NOT CYGWIN AND NOT ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
-        SET(SEC_LINK_FLAGS "${SEC_LINK_FLAGS} -Wl,-z,nodump -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now")
+        SET(SEC_LINK_FLAGS "${SEC_LINK_FLAGS}  -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--no-as-needed -liconv -Wl,--no-as-needed -landroid-wordexp")
     ENDIF ()
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${SEC_LINK_FLAGS}")
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${SEC_LINK_FLAGS}")
